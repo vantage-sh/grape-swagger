@@ -204,6 +204,7 @@ module Grape
         memo[value[:code]] = { description: value[:message] ||= '' } unless memo[value[:code]].present?
         memo[value[:code]][:headers] = value[:headers] if value[:headers]
 
+        next memo[value[:code]][:schema] = value[:schema] if value[:schema]
         next build_file_response(memo[value[:code]]) if file_response?(value[:model])
 
         if memo.key?(200) && route.request_method == 'DELETE' && value[:model].nil?
@@ -421,6 +422,7 @@ module Grape
         default_code[:as] = entity[:as] if entity[:as]
         default_code[:is_array] = entity[:is_array] if entity[:is_array]
         default_code[:required] = entity[:required] if entity[:required]
+        default_code[:schema] = entity[:schema] if entity[:schema]
       else
         default_code = GrapeSwagger::DocMethods::StatusCodes.get[route.request_method.downcase.to_sym]
         default_code[:model] = entity if entity
